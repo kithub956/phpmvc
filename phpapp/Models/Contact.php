@@ -1,5 +1,5 @@
 <?php
-require_once('./Models/Db.php');
+require_once('../Models/Db.php');
 // phpcs:ignore -- 継承元のメソッド名であるため無視
 class Contact extends Db
 {
@@ -32,11 +32,11 @@ class Contact extends Db
     public function checkIn($date)
     {
         try {
-            $name = $date['name'];
-            $kana = $date['kana'];
-            $tel = $date['tel'];
-            $email = $date['email'];
-            $body = $date['body'];
+            $name = ($date['name']);
+            $kana = ($date['kana']);
+            $tel = ($date['tel']);
+            $email = ($date['email']);
+            $body = ($date['body']);
             $stmt = $this->dbh->prepare("INSERT INTO contacts (name, kana, tel, email, body) VALUES (:name, :kana, :tel, :email, :body)");
             $params = array(':name' => $name, ':kana' => $kana, ':tel' => $tel, ':email' => $email, ':body' => $body);
             $stmt->execute($params);

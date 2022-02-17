@@ -1,86 +1,28 @@
 <?php
 session_start();
 require('database.php');
-require('./Controllers/controller.php');
+require('../Controllers/controller.php');
 $controller = new ContactController();
 $date = $controller->index();
-
-        $name =!empty($_POST["name"]);
-        $kana = !empty($_POST["kana"]);
-        $tel = !empty($_POST["tel"]);
-        $email = !empty($_POST["email"]);
-        $body = !empty($_POST["body"]);
-        $name = htmlspecialchars($name, ENT_QUOTES);
-        $kana = htmlspecialchars($kana, ENT_QUOTES);
-        $tel =  htmlspecialchars($tel, ENT_QUOTES);
-        $email =  htmlspecialchars($email, ENT_QUOTES);
-        $body =  htmlspecialchars($body, ENT_QUOTES);
-        $reg_str = "/^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$/";
+$isValid = $controller->validate($_POST);
+if ($isValid['name'] == '' && $isValid["kana"] == '' && $isValid["tel"] == ''
+     && $isValid['email'] == '' && $isValid['body'] == '' && !empty($_POST)) {
+    $_SESSION['form'] = $_POST;
+    header('Location: confirm.php');
+    exit();
+} else {
+    $error = $isValid;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
-    <?php
-    $error = [];
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if ($post['name'] === '') {
-            $error['name'] = 'blank';
-        } elseif (mb_strlen($post['name']) > 10) {
-            $error['name'] = 'length';
-        } else {
-            $error['name'] = 'ok';
-        }
-        
-        if ($post['kana'] === '') {
-            $error['kana'] = 'blank';
-        } elseif (mb_strlen($post ['kana']) > 10) {
-            $error['kana'] = 'length';
-        } else {
-            $error['kana'] = 'ok';
-        }
-        
-        if ($post['tel'] === '') {
-            $error['tel'] = 'ok';
-        } elseif (!preg_match("/^(0{1}\d{9,10})$/", $post["tel"])) {
-            $error['tel'] = 'num';
-        } else {
-            $error['tel'] = 'ok';
-        }
-        
-        if ($post['email'] === '') {
-            $error['email'] = 'blank';
-        } elseif (!filter_var($post['email'], FILTER_VALIDATE_EMAIL)) {
-            $error['email'] = 'email';
-        } else {
-            $error['email'] = 'ok';
-        }
-        
-        if ($post['body'] === '') {
-            $error['body'] = 'blank';
-        } else {
-            $error['body'] = 'ok';
-        }
-       
-        
-        if ($error['name'] == 'ok' && $error["kana"] == 'ok' && $error["tel"] == 'ok'
-        && $error['email'] == 'ok' && $error['body'] == 'ok') {
-            $_SESSION['form'] = $post;
-            header('Location: confirm.php');
-            exit();
-        } else {
-            if (isset($_SESSION['form'])) {
-                $post = $_SESSION['form'];
-            }
-        }
-    }
-    
-    ?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Casteria</title>
   <link rel="stylesheet" type="text/css" href="../css/base.css">
-  <link rel="stylesheet" type="text/css" href="public/css/style.css">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <link rel="stylesheet" type="text/css" href="../css/contact.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/css/swiper.min.css" />
@@ -89,7 +31,7 @@ $date = $controller->index();
     </head>
     <body>
         <?php
-         include './header.php';
+         include 'header.php';
         ?>  
         <section>
             <div id="box">
@@ -146,7 +88,7 @@ $date = $controller->index();
             if ($error['email'] == 'blank') {
                 echo '<div style="color:red;">メールアドレスを記入してください。</div>';
             } elseif ($error['email'] == 'email') {
-                   echo '<div style="color:red;">メールアドレスは正しくご入力ください。</div>';
+                echo '<div style="color:red;">メールアドレスは正しくご入力ください。</div>';
             }
         }
         ?>
@@ -225,42 +167,7 @@ $date = $controller->index();
             </script>
         </table>
         <?php
-        include './footer.php';
+        include 'footer.php';
         ?>
-        <style>
-            dd button {
-        background-color: #fff;
-        color: red;
-        border-color: red;
-    }
-            section {
-       
-        margin-top: 30px;
-    }
-            table {
-        margin-bottom: 30px;
-        width: 100%;
-    }
-            section form {
-        margin-left: 20%;
-    }
-            h2 {
-       margin-left: 20%;
-    }
-            textarea {
-        width: 500px;
-        height: 150px;
-                resize: none;
-    }
-           dd button {
-        width: 189.21px;
-        margin-top: 15px;
-        margin-bottom: 5px;
-    }
-            dd button:hover{
-                background-color: red;
-                color: #fff;
-            }
-    </style>
     </body>
 </html>

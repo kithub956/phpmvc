@@ -1,67 +1,32 @@
 <?php
- session_start();
+session_start();
 require('database.php');
-require('./Controllers/controller.php');
+require('../Controllers/controller.php');
 $controller = new ContactController();
 $result = $controller->Varup();
+$isupVali = $controller->upvali($_POST);
+if ($isupVali['name'] == 'ok' && $isupVali["kana"] == 'ok' && $isupVali["tel"] == 'ok'
+      && $isupVali['email'] == 'ok' && $isupVali['body'] == 'ok') {
+    $_SESSION = $_POST;
+    header("Location:edit.php");
+    exit();
+} else {
+    $error = $isupVali;
+}
+if (empty($_POST['name'])) {
+    $error['tel'] = 'ok';
+    $error['email'] = 'ok';
+}
+var_dump($error);
+
 ?>
 
 <!DOCTYPE html>
 <html>
-<?php
-   $error = [];
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-       $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    if ($result['name'] === '') {
-           $error['name'] = 'blank';
-    } elseif (mb_strlen($result['name']) > 10) {
-           $error['name'] = 'length';
-    } else {
-           $error['name'] = 'ok';
-    }
-
-    if ($result['kana'] === '') {
-        $error['kana'] = 'blank';
-    } elseif (mb_strlen($result ['kana']) > 10) {
-        $error['kana'] = 'length';
-    } else {
-        $error['kana'] = 'ok';
-    }
-
-    if ($result['tel'] === '') {
-        $error['tel'] = 'ok';
-    } elseif (!preg_match("/^(0{1}\d{9,10})$/", $result["tel"])) {
-        $error['tel'] = 'num';
-    } else {
-        $error['tel'] = 'ok';
-    }
-
-    if ($result['email'] === '') {
-        $error['email'] = 'blank';
-    } elseif (!filter_var($result['email'], FILTER_VALIDATE_EMAIL)) {
-        $error['email'] = 'email';
-    } else {
-        $error['email'] = 'ok';
-    }
-    if ($result['body'] === '') {
-        $error['body'] = 'blank';
-    } else {
-        $error['body'] = 'ok';
-    }
-   
-    
-    if ($error['name'] == 'ok' && $error["kana"] == 'ok' && $error["tel"] == 'ok'
-    && $error['email'] == 'ok' && $error['body'] == 'ok' && !empty($_POST['name'])) {
-        $_SESSION = $_POST;
-        header("Location:edit.php");
-    } else {
-    }
-}
-?>
 <head>
     <meta charset="utf-8">
     <title></title>
-    <link rel="stylesheet" href="update.css">
+    <link rel="stylesheet" href="../css/update.css">
 </head>
 <body>
     <dl>
@@ -75,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($error['name'] == 'blank') {
-                        echo '<div style="color:red;margin-left:40px;">氏名を記入してください。</div>';
+                        echo '<div style="color:red;">氏名を記入してください。</div>';
                     } elseif ($error['name'] == 'length') {
-                        echo '<div style="color:red;margin-left:40px;">10文字以内でご入力してください。</div>';
+                        echo '<div style="color:red;">10文字以内でご入力してください。</div>';
                     }
                 }
                 ?>
@@ -92,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($error['kana'] == 'blank') {
-                        echo '<div style="color:red;margin-left:40px;">フリガナを記入してください。</div>';
+                        echo '<div style="color:red;">フリガナを記入してください。</div>';
                     } elseif ($error['kana'] == 'length') {
-                        echo '<div style="color:red;margin-left:40px;">10文字以内でご入力してください。</div>';
+                        echo '<div style="color:red;">10文字以内でご入力してください。</div>';
                     }
                 }
                 ?>
@@ -109,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($error['tel'] == 'num') {
-                        echo '<div style="color:red;margin-left:40px;">電話番号は0-9の数字のみでご入力ください。</div>';
+                        echo '<div style="color:red;">電話番号は0-9の数字のみでご入力ください。</div>';
                     }
                 }
                 ?>
@@ -120,11 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <dt>
                 <label>メールアドレス</label>
                 </dt>
-                <?php if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                <?php
+                var_dump($error['email']);
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($error['email'] == 'blank') {
-                        echo '<div style="color:red;margin-left:40px;">メールアドレスを記入してください。</div>';
+                        echo '<div style="color:red;">メールアドレスを記入してください。</div>';
                     } elseif ($error['email'] == 'email') {
-                        echo '<div style="color:red;margin-left:40px;">メールアドレスは正しくご入力ください。</div>';
+                        echo '<div style="color:red;">メールアドレスは正しくご入力ください。</div>';
                     }
                 }
                 ?>
@@ -155,31 +122,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            }
            </script>
 </dl>
-<style>
-        dd {
-        margin-left:0px;
-        }
-        .sub {
-        background-color: #fff;
-        color: red;
-        border-color: red;
-        }
-        dl {
-        margin-top: 30px;
-        }
-        form {
-        margin-left: 20%;
-        }
-        textarea {
-        width: 500px;
-        height: 150px;
-                resize: none;
-        }
-        .sub {
-        width: 189.21px;
-        margin-top: 15px;
-        margin-bottom: 5px;
-        }
-    </style>
 </body>
 </html>

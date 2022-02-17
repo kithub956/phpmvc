@@ -1,0 +1,32 @@
+dd button {
+        background-color: #fff;
+        color: red;
+        border-color: red;
+    }
+section {       
+        margin-top: 30px;
+    }
+table {
+        margin-bottom: 30px;
+        width: 100%;
+    }
+section form {
+        margin-left: 20%;
+    }
+h2 {
+        margin-left: 20%;
+    }
+textarea {
+        width: 500px;
+        height: 150px;
+        resize: none;
+    }
+dd button {
+        width: 189.21px;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+dd button:hover {
+            background-color: red;
+            color: #fff;
+            }
