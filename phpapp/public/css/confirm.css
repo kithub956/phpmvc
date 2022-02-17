@@ -1,0 +1,25 @@
+.btn button {
+        background-color: #fff;
+        color: red;
+        border-color: red;
+    }
+.btn a {
+        border: solid;
+        padding: 2px 7px;
+    }
+.btn a:hover {
+        background-color: blue;
+        color: #fff;
+    }
+section {
+        margin-top: 30px;
+        margin-left: 20%;
+    }
+dd button {
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+dd button:hover{
+        background-color: red;
+        color: #fff;
+    }

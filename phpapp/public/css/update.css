@@ -1,0 +1,24 @@
+dd {
+        margin-left:0px;
+        }
+        .sub {
+        background-color: #fff;
+        color: red;
+        border-color: red;
+        }
+        dl {
+        margin-top: 30px;
+        }
+        form {
+        margin-left: 20%;
+        }
+        textarea {
+        width: 500px;
+        height: 150px;
+                resize: none;
+        }
+        .sub {
+        width: 189.21px;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        }
